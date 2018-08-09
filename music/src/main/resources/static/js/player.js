@@ -6,7 +6,7 @@
  *************************************************/
 // 播放器功能配置
 var mkPlayer = {
-    api: "/mic/search", // api地址
+    api: "http://localhost/mic/list", // api地址
     loadcount: 30,  // 搜索结果一次加载多少条
     method: "POST",     // 数据传输方式(POST/GET)
     defaultlist: 3,    // 默认要显示的播放列表编号

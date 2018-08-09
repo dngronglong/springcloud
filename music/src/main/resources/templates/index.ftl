@@ -22,26 +22,26 @@
     
     <!-- 不支持IE8及以下版本浏览器 -->
     <!--[if lte IE 8]>
-        <script>window.location.href="plugns/killie/"</script>
+        <script>window.location.href="../plugns/killie/"</script>
     <![endif]--> 
     
     <!-- favicon图标 -->
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
     
     <!-- jQuery文件 -->
-    <script src="js/jquery.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
     
     <!-- 播放器样式表文件 -->
-    <link rel="stylesheet" type="text/css" href="css/player.css">
+    <link rel="stylesheet" type="text/css" href="../css/player.css">
     
     <!-- 小屏幕样式修复 -->
-    <link rel="stylesheet" type="text/css" href="css/small.css">
+    <link rel="stylesheet" type="text/css" href="../css/small.css">
     
     <!-- 滚动条美化样式文件 -->
-    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/jquery.mCustomScrollbar.min.css">
     
     <!-- layer弹窗插件样式文件 -->
-    <link rel="stylesheet" href="plugns/layer/skin/default/layer.css?v=3.0.2302" id="layuicss-skinlayercss">
+    <link rel="stylesheet" href="../plugns/layer/skin/default/layer.css?v=3.0.2302" id="layuicss-skinlayercss">
 </head>
 <body>
 
@@ -119,28 +119,28 @@
 </div>  <!--class="footer"-->
 
 <!-- layer弹窗插件 -->
-<script src="plugns/layer/layer.js"></script>
+<script src="../plugns/layer/layer.js"></script>
 
 <!-- 播放器数据加载模块 -->
-<script src="js/ajax.js"></script>
+<script src="../js/ajax.js"></script>
 
 <!-- 播放器歌词解析模块 -->
-<script src="js/lyric.js"></script>
+<script src="../js/lyric.js"></script>
 
 <!-- 音乐列表配置 -->
-<script src="js/musicList.js"></script>
+<script src="../js/musicList.js"></script>
 
 <!-- 封装函数及ui交互模块 -->
-<script src="js/functions.js"></script>
+<script src="../js/functions.js"></script>
 
 <!-- 播放器主体功能模块 -->
-<script src="js/player.js"></script>
+<script src="../js/player.js"></script>
 
 <!-- 滚动条美化插件 -->
-<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
 
 <!-- 背景模糊化插件 -->
-<script src="js/background-blur.min.js"></script>
+<script src="../js/background-blur.min.js"></script>
 
 
 </body>

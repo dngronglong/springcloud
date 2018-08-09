@@ -216,6 +216,7 @@ public class GetUrl {
             String js = response.replace("jQuery191034642999175022426_1489023388639", "").replace("(", "").replace(")", "");
             js=js.replace("<em>","").replace("<\\/em>","");
             Gson gson=new Gson();
+            System.out.println(js);
             KuGouMusicBean kuGouMusicBean=gson.fromJson(js,KuGouMusicBean.class);
             return kuGouMusicBean;
         } catch (Exception e) {
