@@ -6,11 +6,19 @@ import com.arronlong.httpclientutil.common.HttpConfig;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
 import com.google.gson.Gson;
 import com.my.springcloud.beans.*;
+import com.my.springcloud.beans.cloud.Comment;
+import com.my.springcloud.beans.tencent.QLrcBean;
+import com.my.springcloud.secret.JSSecret;
+import com.my.springcloud.utils.cloud.CloudMusicApi;
+import com.my.springcloud.utils.cloud.UrlParamPair;
 import net.sf.json.JSONObject;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import sun.misc.BASE64Encoder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -25,7 +33,7 @@ import java.util.List;
 public class GetUrl {
 
     public static List<Music.Song> getMusicList(String word, String page, String count) {
-        String url = "http://s.music.qq.com/fcgi-bin/music_search_new_platform?t="+page+"&n="+count+"&aggr=1&cr=1&loginUin=0&format=json&inCharset=GB2312&outCharset=utf-8&notice=0&platform=jqminiframe.json&needNewCode=0&p=1&catZhida=0&remoteplace=sizer.newclient.next_song&w=" + word;
+        String url = "http://s.music.qq.com/fcgi-bin/music_search_new_platform?t=" + page + "&n=" + count + "&aggr=1&cr=1&loginUin=0&format=json&inCharset=GB2312&outCharset=utf-8&notice=0&platform=jqminiframe.json&needNewCode=0&p=1&catZhida=0&remoteplace=sizer.newclient.next_song&w=" + word;
         HttpConfig httpConfig = HttpConfig.custom().url(url);
         try {
             String response = HttpClientUtil.send(httpConfig);
@@ -38,7 +46,7 @@ public class GetUrl {
                 if (j.length == 1) {
                     song.setAlbum("");
                 } else {
-                    String lyricSrc = "http://music.qq.com/miniportal/static/lyric/"+String.valueOf(Integer.valueOf(j[0]) % 100) + "/" +String.valueOf(j[0])+".xml";
+                    String lyricSrc = "http://music.qq.com/miniportal/static/lyric/" + String.valueOf(Integer.valueOf(j[0]) % 100) + "/" + String.valueOf(j[0]) + ".xml";
                     song.setLyricSrc(lyricSrc);
                     song.setMid(j[20]);
                     song.setAlbum(j[5]);
@@ -55,19 +63,20 @@ public class GetUrl {
 
     /**
      * 获取封面
+     *
      * @param mid
      * @return
      */
-    public static MusicHQ getAblum(String mid){
-        String url="http://www.douqq.com/qqmusic/qqapi.php?mid="+mid;
+    public static MusicHQ getAblum(String mid) {
+        String url = "http://www.douqq.com/qqmusic/qqapi.php?mid=" + mid;
         HttpConfig httpConfig = HttpConfig.custom().url(url).encoding("UTf-8");
         try {
             String response = HttpClientUtil.send(httpConfig);
-            response=response.substring(1).replace("\\\\\\","");
-            response=response.substring(0,response.length()-1);
-            response=response.replace("\\","");
+            response = response.substring(1).replace("\\\\\\", "");
+            response = response.substring(0, response.length() - 1);
+            response = response.replace("\\", "");
             Gson gson = new Gson();
-            MusicHQ musicHQ=gson.fromJson(response, MusicHQ.class);
+            MusicHQ musicHQ = gson.fromJson(response, MusicHQ.class);
             //System.out.println(musicHQ);
             return musicHQ;
         } catch (HttpProcessException e) {
@@ -163,10 +172,11 @@ public class GetUrl {
 
     /**
      * 新歌热搜
+     *
      * @return
      */
-    public static List<TopBean.SongList> top(){
-        String url="https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=27&_=1519963122923";
+    public static List<TopBean.SongList> top() {
+        String url = "https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=27&_=1519963122923";
         HttpConfig httpConfig = HttpConfig.custom().url(url);
         try {
             String response = HttpClientUtil.send(httpConfig);
@@ -181,11 +191,12 @@ public class GetUrl {
 
         return null;
     }
+
     /**
      * 随机推荐音乐
      */
-    public static List<TopBean.SongList> random(){
-        String url="https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=36&_=1520777874472";
+    public static List<TopBean.SongList> random() {
+        String url = "https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=36&_=1520777874472";
         HttpConfig httpConfig = HttpConfig.custom().url(url);
         try {
             String response = HttpClientUtil.send(httpConfig);
@@ -200,6 +211,7 @@ public class GetUrl {
 
         return null;
     }
+
     /**
      * 酷狗接口获取hash
      */
@@ -209,15 +221,15 @@ public class GetUrl {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = "http://songsearch.kugou.com/song_search_v2?callback=jQuery191034642999175022426_1489023388639&keyword=" + words + "&page="+page+"&pagesize="+limit+"&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=1489023388641";
+        String url = "http://songsearch.kugou.com/song_search_v2?callback=jQuery191034642999175022426_1489023388639&keyword=" + words + "&page=" + page + "&pagesize=" + limit + "&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=1489023388641";
         HttpConfig httpConfig = HttpConfig.custom().url(url);
         try {
             String response = HttpClientUtil.send(httpConfig);
             String js = response.replace("jQuery191034642999175022426_1489023388639", "").replace("(", "").replace(")", "");
-            js=js.replace("<em>","").replace("<\\/em>","");
-            Gson gson=new Gson();
+            js = js.replace("<em>", "").replace("<\\/em>", "");
+            Gson gson = new Gson();
             System.out.println(js);
-            KuGouMusicBean kuGouMusicBean=gson.fromJson(js,KuGouMusicBean.class);
+            KuGouMusicBean kuGouMusicBean = gson.fromJson(js, KuGouMusicBean.class);
             return kuGouMusicBean;
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,6 +237,7 @@ public class GetUrl {
 
         return null;
     }
+
     /**
      * 酷狗接口获取url
      */
@@ -247,5 +260,85 @@ public class GetUrl {
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+    public static Comment getCloudMusic(String musicName, String offset, String limit) {
+        try {
+            UrlParamPair upp = CloudMusicApi.SearchMusicList(musicName, "1", offset, limit);
+            String req_str = upp.getParas().toString();
+            System.out.println("req_str:" + req_str);
+            Connection.Response
+                    response = Jsoup.connect("http://music.163.com/weapi/cloudsearch/get/web?csrf_token=")
+                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:57.0) Gecko/20100101 Firefox/57.0")
+                    .header("Accept", "*/*")
+                    .header("Cache-Control", "no-cache")
+                    .header("Connection", "keep-alive")
+                    .header("Host", "music.163.com")
+                    .header("Accept-Language", "zh-CN,en-US;q=0.7,en;q=0.3")
+                    .header("DNT", "1")
+                    .header("Pragma", "no-cache")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .data(JSSecret.getDatas(req_str))
+                    .method(Connection.Method.POST)
+                    .ignoreContentType(true)
+                    .timeout(10000)
+                    .execute();
+            String list = response.body();
+            Gson gson = new Gson();
+            Comment comment = gson.fromJson(list, Comment.class);
+            return comment;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 返回qq音乐歌词
+     *
+     * @param mid
+     * @return
+     */
+    public static QLrcBean getQLrc(String mid) {
+        String url = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?callback=MusicJsonCallback_lrc&nobase64=1&pcachetime=1534319475618&songmid=" + mid + "&g_tk=5381&jsonpCallback=MusicJsonCallback_lrc&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0";
+        StringBuilder json = new StringBuilder();
+        try {
+            URL urlObject = new URL(url);
+            URLConnection uc = urlObject.openConnection();
+            uc.addRequestProperty("Referer", "https://y.qq.com/portal/player.html");
+            BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "utf-8"));
+            String inputLine = null;
+            while ((inputLine = in.readLine()) != null) {
+                json.append(inputLine);
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String jsonStr = json.toString().replace("MusicJsonCallback_lrc(", "").replace(")", "");
+        Gson gson = new Gson();
+        QLrcBean qLrcBean = gson.fromJson(jsonStr, QLrcBean.class);
+//        String lrc = "";
+//        lrc = getBase64(qLrcBean.getLyric());
+//        qLrcBean.setLyric(lrc);
+        return qLrcBean;
+    }
+
+    public static void main(String[] args) {
+        getQLrc("003tbRjy4V1wRt");
+    }
+
+    private static String getBase64(String str) {
+        byte[] b = null;
+        String s = null;
+        try {
+            b = str.getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (b != null) {
+            s = new BASE64Encoder().encode(b);
+        }
+        return s;
     }
 }

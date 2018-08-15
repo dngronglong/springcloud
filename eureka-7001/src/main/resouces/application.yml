@@ -1,13 +1,21 @@
-server:
-  port: 7001
-
+#server:
+#  port: 8761
+#spring:
+#  profiles:
+#    active: peer1
+#  application:
+#    name: Eureka-Server-1
+  #官方写的就是 8761
 #security:
 #  basic:
 #    enabled: true #启用安全处理
 #  user:
 #    name: admin
 #    password: 123456
-
+#spring:
+#  profiles: peer1
+server:
+  port: 8761
 eureka:
   instance:                   #定义Eureka实例
     hostname: eureka-7001.com #Eureka实例所在的主机名
@@ -16,6 +24,9 @@ eureka:
   client:
     register-with-eureka: false #表示是否将自己注册到Eureka Server上，默认为true
     fetch-registry: false       #表示是否从Eureka Server上获取注册信息，默认为true
-    server:
-      eviction-interval-timer-in-ms: 6000 #设置清理的间隔时间(默认6000ms)
-      enable-self-preservation: false #关闭保护模式
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+
+

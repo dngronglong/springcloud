@@ -4,6 +4,7 @@ package com.my.springcloud.controller;
 import com.my.springcloud.beans.KuGouMusicBean;
 import com.my.springcloud.beans.MusicBean;
 import com.my.springcloud.beans.MusicHQ;
+import com.my.springcloud.beans.tencent.QLrcBean;
 import com.my.springcloud.utils.GetUrl;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +20,15 @@ public class MusicController {
 
     //搜索音乐
     @RequestMapping(value = "/search", produces = {"application/json;charset=utf-8"})
-    public Map search(@RequestParam Map<String, Object> map1) {
+    public Map search(@RequestParam Map<String, Object> param) {
         Map map = new HashMap();
-        if (map1.get("source").toString().equals("tencent")) {
-            map.put("songList", GetUrl.getMusicList(map1.get("words").toString(), map1.get("pages").toString(), map1.get("count").toString()));
-        }else if (map1.get("source").toString().equals("kugou")){
-            KuGouMusicBean kkuGou=GetUrl.getJson(map1.get("words").toString(),map1.get("pages").toString(), map1.get("count").toString());
+        if (param.get("source").toString().equals("tencent")) {
+            map.put("songList", GetUrl.getMusicList(param.get("words").toString(), param.get("pages").toString(), param.get("count").toString()));
+        }else if (param.get("source").toString().equals("kugou")){
+            KuGouMusicBean kkuGou=GetUrl.getJson(param.get("words").toString(),param.get("pages").toString(), param.get("count").toString());
             map.put("songList",kkuGou);
+        }else if (param.get("source").toString().equals("cloud")){
+            map.put("songList",GetUrl.getCloudMusic(param.get("words").toString(),param.get("pages").toString(), param.get("count").toString()));
         }
         return map;
     }
@@ -74,6 +77,13 @@ public class MusicController {
     @RequestMapping("/ablum")
     public MusicHQ ablum(String mid){
         return GetUrl.getAblum(mid);
+    }
+    /**
+     * 获取qq音乐歌词
+     */
+    @RequestMapping("/lrc")
+    public QLrcBean getLrc(String mid){
+        return GetUrl.getQLrc(mid);
     }
     //    @RequestMapping(value = "/addList")
 //    public void addList(String listName,int id){

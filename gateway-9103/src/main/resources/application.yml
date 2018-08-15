@@ -5,21 +5,23 @@ server:
   port: 9103
 
 eureka:
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+#  instance:
+#    prefer-ip-address: true
+#    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
   client:
     service-url:
-     defaultZone: http://eureka-7001.com:7001/eureka
-
+     defaultZone: http://eureka-7001.com:8761/eureka
 #zuul默认为所有服务开启默认的路由，为了服务安全，此处关闭
 zuul:
-  ignored-services: '*'
-  #自定义服务路由
   routes:
-    eureka-consumer:
-      path: /mic/**
-      serviceId: music
+#      music: /mic/**
+      music:
+            path: /**
+            serviceId: music
+
+
+
+
 
 
 
